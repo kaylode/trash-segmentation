@@ -1,4 +1,6 @@
 
-*.txt
+.txt
 *.tsv
 *.csv
+.vscode
+
