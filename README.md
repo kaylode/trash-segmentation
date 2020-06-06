@@ -28,3 +28,10 @@
 
 ## **Referenced Codes:**
   -	https://github.com/dbolya/yolact
+
+
+# Hướng dẫn cài:
+- Clone project về
+- Vào link này, tải dataset về: https://drive.google.com/drive/folders/125F48fsMBz2EF0Cpqk6aaHet5VH399Ok (Pass unzip: 2019Deepfashion2**)
+- Giải nén tất cả vào thư mục dataset/deepfashion
+- Mở file deep_fashion.ipynb bằng colab rồi chạy thử
