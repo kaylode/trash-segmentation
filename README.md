@@ -40,7 +40,7 @@ YOLACT++ | 550 x 550 | Resnet50-FPN | 33.5 | 34.1 | [yolact_plus_resnet50_54_800
 
 # Hướng dẫn cài:
 - Clone project về
-- Vào link này, tải dataset về: https://drive.google.com/drive/folders/125F48fsMBz2EF0Cpqk6aaHet5VH399Ok (Pass unzip: 2019Deepfashion2**)
+- Vào link này, tải dataset về: [Link download](https://drive.google.com/drive/folders/125F48fsMBz2EF0Cpqk6aaHet5VH399Ok) (Pass unzip: 2019Deepfashion2**)
 - Giải nén tất cả vào thư mục dataset/deepfashion
 - Tải 3 file pretrained model ở trên về, giải nén vào thư mục weights
 - Mở file deep_fashion.ipynb bằng colab rồi chạy thử
