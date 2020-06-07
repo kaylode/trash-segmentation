@@ -172,8 +172,22 @@ pascal_sbd_dataset = dataset_base.copy({
     'class_names': PASCAL_CLASSES,
 })
 
+DEEPFASHION_CLASSES = ("short_sleeved_shirt", "long_sleeved_shirt", "short_sleeved_outwear",
+                    "long_sleeved_outwear", "vest", "sling", "shorts", "trousers","skirt",
+                     "short_sleeved_dress", "long_sleeved_dress", "vest_dress", "sling_dress")
 
+deep_fashion = dataset_base.copy({
+    'name': 'Deep Fashion V2',
 
+    'train_images': './data/deepfashion/images/train',
+    'train_info':   './data/deepfashion/annotations/deepfashion2_train.json',
+
+    'valid_images': './data/deepfashion/images/val',
+    'valid_info':   './data/deepfashion/annotations/deepfashion2_val.json',
+
+    'has_gt': True,
+    'class_names': DEEPFASHION_CLASSES
+})
 
 
 # ----------------------- TRANSFORMS ----------------------- #
@@ -657,8 +671,8 @@ yolact_base_config = coco_base_config.copy({
     'name': 'yolact_base',
 
     # Dataset stuff
-    'dataset': coco2017_dataset,
-    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'dataset': deep_fashion,
+    'num_classes': len(deep_fashion.class_names) + 1,
 
     # Image Size
     'max_size': 550,
