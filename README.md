@@ -45,7 +45,7 @@ YOLACT++ | 550 x 550 | Resnet50-FPN | 33.5 | 34.1 | [yolact_plus_resnet50_54_800
 - Clone project về
 - Vào link này, tải dataset và annotiation về: 
 	- [Link dataset](https://drive.google.com/drive/folders/125F48fsMBz2EF0Cpqk6aaHet5VH399Ok) (Pass unzip: 2019Deepfashion2**) 
-	- [Link annotation](https://drive.google.com/file/d/1kVBKLII2Q4KLof1DfUKAwQoo3x27b6Dp/view?usp=sharing)
+	- [Link annotation](https://drive.google.com/file/d/1D43uB0uawLn2fCIp4TA-1_CoKBT88Ee_/view?usp=sharing)
 - Giải nén dataset vào thư mục dataset/deepfashion, annotation vào dataset/deepfashion/train
 - Tải 3 file pretrained model ở trên về, giải nén vào thư mục weights
 - Mở file deep_fashion.ipynb bằng colab rồi chạy thử
