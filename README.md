@@ -37,7 +37,10 @@ YOLACT++ | 550 x 550 | Resnet50-FPN | 33.5 | 34.1 | [yolact_plus_resnet50_54_800
 ## **Referenced Codes:**
   -	https://github.com/dbolya/yolact
 
-
+## **Guide Video:**
+- **COCO Annotation Format Guide**
+[![Watch the video](https://img.youtube.com/vi/h6s61a_pqfM/maxresdefault.jpg)](https://www.youtube.com/watch?v=h6s61a_pqfM)
+	
 # Hướng dẫn cài:
 - Clone project về
 - Vào link này, tải dataset về: [Link download](https://drive.google.com/drive/folders/125F48fsMBz2EF0Cpqk6aaHet5VH399Ok) (Pass unzip: 2019Deepfashion2**)
