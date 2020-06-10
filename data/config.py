@@ -176,7 +176,7 @@ DEEPFASHION_CLASSES = ("short_sleeved_shirt", "long_sleeved_shirt", "short_sleev
                     "long_sleeved_outwear", "vest", "sling", "shorts", "trousers","skirt",
                      "short_sleeved_dress", "long_sleeved_dress", "vest_dress", "sling_dress")
 
-deep_fashion = dataset_base.copy({
+deep_fashion_dataset = dataset_base.copy({
     'name': 'Deep Fashion V2',
 
     'train_images': './data/deepfashion/images/train',
@@ -189,7 +189,33 @@ deep_fashion = dataset_base.copy({
     'class_names': DEEPFASHION_CLASSES
 })
 
+TACO_CLASSES = ('Aluminium foil', 'Battery', 'Aluminium blister pack', 
+'Carded blister pack', 'Other plastic bottle', 'Clear plastic bottle', 
+'Glass bottle', 'Plastic bottle cap', 'Metal bottle cap', 'Broken glass', 
+'Food Can', 'Aerosol', 'Drink can', 'Toilet tube', 'Other carton', 'Egg carton', 
+'Drink carton', 'Corrugated carton', 'Meal carton', 'Pizza box', 'Paper cup', 
+'Disposable plastic cup', 'Foam cup', 'Glass cup', 'Other plastic cup', 'Food waste',
+ 'Glass jar', 'Plastic lid', 'Metal lid', 'Other plastic', 'Magazine paper', 'Tissues', 
+ 'Wrapping paper', 'Normal paper', 'Paper bag', 'Plastified paper bag', 'Plastic film',
+  'Six pack rings', 'Garbage bag', 'Other plastic wrapper', 'Single-use carrier bag',
+   'Polypropylene bag', 'Crisp packet', 'Spread tub', 'Tupperware', 
+   'Disposable food container', 'Foam food container', 'Other plastic container',
+    'Plastic glooves', 'Plastic utensils', 'Pop tab', 'Rope & strings', 'Scrap metal',
+     'Shoe', 'Squeezable tube', 'Plastic straw', 'Paper straw', 'Styrofoam piece',
+      'Unlabeled litter', 'Cigarette')
 
+taco_dataset =  dataset_base.copy({
+    'name': 'Taco',
+
+    'train_images': './data/taco/images',
+    'train_info':   './data/taco/annotations/taco.json',
+
+    'valid_images': './data/taco/images',
+    'valid_info':   './data/taco/annotations/taco.json',
+
+    'has_gt': True,
+    'class_names': TACO_CLASSES
+})
 # ----------------------- TRANSFORMS ----------------------- #
 
 resnet_transform = Config({
@@ -671,8 +697,8 @@ yolact_base_config = coco_base_config.copy({
     'name': 'yolact_base',
 
     # Dataset stuff
-    'dataset': deep_fashion,
-    'num_classes': len(deep_fashion.class_names) + 1,
+    'dataset': taco_dataset,
+    'num_classes': len(taco_dataset.class_names) + 1,
 
     # Image Size
     'max_size': 550,
