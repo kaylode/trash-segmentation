@@ -535,13 +535,13 @@ coco_base_config = Config({
 
     # SSD data augmentation parameters
     # Randomize hue, vibrance, etc.
-    'augment_photometric_distort': True,
+    'augment_photometric_distort': False,
     # Have a chance to scale down the image and pad (to emulate smaller detections)
     'augment_expand': True,
     # Potentialy sample a random crop from the image and put it in a random place
-    'augment_random_sample_crop': True,
+    'augment_random_sample_crop': False,
     # Mirror the image with a probability of 1/2
-    'augment_random_mirror': True,
+    'augment_random_mirror': False,
     # Flip the image vertically with a probability of 1/2
     'augment_random_flip': False,
     # With uniform probability, rotate the image [0,90,180,270] degrees
@@ -553,7 +553,7 @@ coco_base_config = Config({
 
     # If using batchnorm anywhere in the backbone, freeze the batchnorm layer during training.
     # Note: any additional batch norm layers after the backbone will not be frozen.
-    'freeze_bn': False,
+    'freeze_bn': True,
 
     # Set this to a config object if you want an FPN (inherit from fpn_base). See fpn_base for details.
     'fpn': None,
@@ -713,9 +713,10 @@ yolact_base_config = coco_base_config.copy({
     'max_size': 550,
     
     # Training params
-    'lr_steps': (280000, 600000, 700000, 750000),
-    'max_iter': 800000,
-    
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
+
     # Backbone Settings
     'backbone': resnet101_backbone.copy({
         'selected_layers': list(range(1, 4)),
