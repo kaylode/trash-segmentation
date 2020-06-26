@@ -1,4 +1,4 @@
-# Clothes Segmentation
+# Real-Time Trash Instaces Segmentation
  Project for studying
 
 ## To Do:
@@ -7,7 +7,7 @@
 - [ ]  3. Preprocess data (data cleaning)
 - [ ]  4. Build model
 - [ ]  5. Train / Evaluate
-- [ ]  6. Predict
+- [ ]  6. Inference
 
 
 ## **Referenced Papers:** 
@@ -23,29 +23,28 @@
     -	Link: https://arxiv.org/abs/1912.06218
 
 ## **Datasets:**
-  -	Deep Fashion 2: https://github.com/switchablenorms/DeepFashion2
-
-## **Pretrained Weights (on COCO test-dev)**
+  -	TACO (Trash Annotations in Context)	: https://github.com/pedropro/TACO
+  -	COCO 					: https://cocodataset.org/#download
+## **Pretrained Weights **
 	
-Model | Image Size | Backbone | FPS | mAP | Weights
---- | --- | --- | --- | --- |--- 
-YOLACT | 550 x 550 | Resnet101-FPN | 33.5 | 29.8 | [yolact_base_54_800000.pth](https://drive.google.com/file/d/1UYy3dMapbH1BnmtZU4WH1zbYgOzzHHf_/view)
-YOLACT | 700 x 700 | Resnet101-FPN | 23.6 | 31.2 | [yolact_im700_54_800000.pth](https://drive.google.com/file/d/1lE4Lz5p25teiXV-6HdTiOJSnS7u7GBzg/view)
-YOLACT++ | 550 x 550 | Resnet50-FPN | 33.5 | 34.1 | [yolact_plus_resnet50_54_800000.pth](https://drive.google.com/file/d/1ZPu1YR2UzGHQD0o1rEqy-j5bmEm3lbyP/view)
+Model | Image Size | Backbone | Dataset | Weights
+--- | --- | --- | --- | --- 
+YOLACT | 550 x 550 | Resnet101-FPN | COCO | [yolact_base_54_800000.pth](https://drive.google.com/file/d/1UYy3dMapbH1BnmtZU4WH1zbYgOzzHHf_/view)
+YOLACT | 550 x 550 | Resnet101-FPN | TACO | [yolact_base_10_16500.pth](https://drive.google.com/file/d/1XuCem1VaEv4X_IZr1ccgBwoJ_pWM8yRE/view?usp=sharing)
+
+Backbone Resnet101: [Link](https://drive.google.com/file/d/1tvqFPd4bJtakOlmn-uIA492g2qurRChj/view?usp=sharing)
 
 
 ## **Referenced Codes:**
-  -	https://github.com/dbolya/yolact
+  -	Yolact: https://github.com/dbolya/yolact
 
 ## **Guide Video:**
 - **COCO Annotation Format Guide**
 [![Watch the video](https://img.youtube.com/vi/h6s61a_pqfM/maxresdefault.jpg)](https://www.youtube.com/watch?v=h6s61a_pqfM)
 	
-# Hướng dẫn cài:
-- Clone project về
-- Vào link này, tải dataset và annotiation về: 
-	- [Link dataset](https://drive.google.com/drive/folders/125F48fsMBz2EF0Cpqk6aaHet5VH399Ok) (Pass unzip: 2019Deepfashion2**) 
-	- [Link annotation](https://drive.google.com/file/d/1D43uB0uawLn2fCIp4TA-1_CoKBT88Ee_/view?usp=sharing)
-- Giải nén 2 file vào thư mục data/deepfashion
-- Tải 3 file pretrained model ở trên về, giải nén vào thư mục weights
+# Hướng dẫn cài đặt và sử dụng trên colab
+- Vào link này, thêm lối tắt drive của dataset và annotiation về drive của mình: 
+	- [Link dataset và annotation của TACO](https://drive.google.com/file/d/1Ol3OcfjAfRul0lxKuV6ezaKP89HXqDMz/view?usp=sharing)
+- Thêm lối tắt 3 file pretrained weights ở trên về drive của mình
+
 - Mở file deep_fashion.ipynb bằng colab rồi chạy thử
