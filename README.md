@@ -1,15 +1,11 @@
 # Real-Time Trash Instaces Segmentation
  Project for studying
 
-## To Do:
-- [ ]  1. Analyze training data 
-- [ ]  2. Add custom dataset
-- [ ]  3. Preprocess data (data cleaning)
-- [ ]  4. Build model
-- [ ]  5. Train / Evaluate
-- [ ]  6. Inference
+**Introduction**
+![alt text](https://miro.medium.com/max/1400/0*QeOs5RvXlkbDkLOy.png)
 
-
+![alt text](https://miro.medium.com/max/1400/1*8xmRyJa0Plkp0xByomvb7A.png)
+- Yolact quan trọng vấn đề tốc độ hơn chính xác (độ chính xác giảm không nhiều, nhưng tốc độ vượt trội hơn so với các model khác)
 ## **Referenced Papers:** 
 
 1. **YOLACT: Real-time Instance Segmentation**
@@ -25,7 +21,7 @@
 ## **Datasets:**
   -	TACO (Trash Annotations in Context)	: https://github.com/pedropro/TACO
   -	COCO 					: https://cocodataset.org/#download
-## **Pretrained Weights **
+## **Pretrained Weights**
 	
 Model | Image Size | Backbone | Dataset | Weights
 --- | --- | --- | --- | --- 
@@ -47,4 +43,4 @@ Backbone Resnet101: [Link](https://drive.google.com/file/d/1tvqFPd4bJtakOlmn-uIA
 	- [Link dataset và annotation của TACO](https://drive.google.com/file/d/1Ol3OcfjAfRul0lxKuV6ezaKP89HXqDMz/view?usp=sharing)
 - Thêm lối tắt 3 file pretrained weights ở trên về drive của mình
 
-- Mở file deep_fashion.ipynb bằng colab rồi chạy thử
+- Tải [file colab](https://colab.research.google.com/drive/1ZVlF6K5HfcsS_G1tW_esY542n80CZOn0?authuser=1#scrollTo=fdHPLAp4xPKO) và chạy thử
