@@ -2,10 +2,13 @@
  Project for studying
 
 **Introduction**
-![alt text](https://miro.medium.com/max/1400/0*QeOs5RvXlkbDkLOy.png)
 
+![alt text](https://miro.medium.com/max/1400/0*QeOs5RvXlkbDkLOy.png)
+![alt text](https://miro.medium.com/max/1400/1*n64Z12hTZMph6H5EUbG0Nw.png)
+- Cấu trúc của Yolact (ảnh lấy từ paper)
 ![alt text](https://miro.medium.com/max/1400/1*8xmRyJa0Plkp0xByomvb7A.png)
 - Yolact quan trọng vấn đề tốc độ hơn chính xác (độ chính xác giảm không nhiều, nhưng tốc độ vượt trội hơn so với các model khác)
+
 ## **Referenced Papers:** 
 
 1. **YOLACT: Real-time Instance Segmentation**
@@ -21,6 +24,7 @@
 ## **Datasets:**
   -	TACO (Trash Annotations in Context)	: https://github.com/pedropro/TACO
   -	COCO 					: https://cocodataset.org/#download
+  
 ## **Pretrained Weights**
 	
 Model | Image Size | Backbone | Dataset | Weights
