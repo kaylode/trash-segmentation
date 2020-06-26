@@ -706,8 +706,8 @@ yolact_base_config = coco_base_config.copy({
     'name': 'yolact_base',
 
     # Dataset stuff
-    'dataset': taco_dataset,
-    'num_classes': len(taco_dataset.class_names) + 1,
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
 
     # Image Size
     'max_size': 550,
