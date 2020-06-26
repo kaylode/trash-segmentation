@@ -55,3 +55,6 @@ Backbone Resnet101: [Link](https://drive.google.com/file/d/1tvqFPd4bJtakOlmn-uIA
 
 ![alt text](images/config_guide.png)
 ![alt text](images/config_guide2.png)
+
+- Sau đó bạn push folder yolact đó lên github cá nhân, và cũng upload dataset mới lên drive cá nhân
+- Tham khảo colab của mình, thay vào đó link github và drive của bạn
