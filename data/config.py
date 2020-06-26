@@ -54,14 +54,7 @@ COCO_LABEL_MAP = { 1:  1,  2:  2,  3:  3,  4:  4,  5:  5,  6:  6,  7:  7,  8:  8
                   74: 65, 75: 66, 76: 67, 77: 68, 78: 69, 79: 70, 80: 71, 81: 72,
                   82: 73, 84: 74, 85: 75, 86: 76, 87: 77, 88: 78, 89: 79, 90: 80}
 
-TACO_LABEL_MAP = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10, 
-		10: 11, 11: 12, 12: 13, 13: 14, 14: 15, 15: 16, 16: 17, 17: 18,
- 		18: 19, 19: 20, 20: 21, 21: 22, 22: 23, 23: 24, 24: 25, 25: 26,
-		26: 27, 27: 28, 28: 29, 29: 30, 30: 31, 31: 32, 32: 33, 33: 34,
- 		34: 35, 35: 36, 36: 37, 37: 38, 38: 39, 39: 40, 40: 41, 41: 42,
-		42: 43, 43: 44, 44: 45, 45: 46, 46: 47, 47: 48, 48: 49, 49: 50,
-		50: 51, 51: 52, 52: 53, 53: 54, 54: 55, 55: 56, 56: 57, 57: 58,
-		58: 59, 59: 60}
+
 
 # ----------------------- CONFIG CLASS ----------------------- #
 
@@ -179,52 +172,10 @@ pascal_sbd_dataset = dataset_base.copy({
     'class_names': PASCAL_CLASSES,
 })
 
-DEEPFASHION_CLASSES = ("short_sleeved_shirt", "long_sleeved_shirt", "short_sleeved_outwear",
-                    "long_sleeved_outwear", "vest", "sling", "shorts", "trousers","skirt",
-                     "short_sleeved_dress", "long_sleeved_dress", "vest_dress", "sling_dress")
 
-deep_fashion_dataset = dataset_base.copy({
-    'name': 'Deep Fashion V2',
 
-    'train_images': './data/deepfashion/images/train',
-    'train_info':   './data/deepfashion/annotations/deepfashion2_train.json',
 
-    'valid_images': './data/deepfashion/images/val',
-    'valid_info':   './data/deepfashion/annotations/deepfashion2_val.json',
 
-    'has_gt': True,
-    'class_names': DEEPFASHION_CLASSES
-})
-
-TACO_CLASSES = ('Aluminium foil', 'Battery', 'Aluminium blister pack',
- 	'Carded blister pack', 'Other plastic bottle', 'Clear plastic bottle',
- 	'Glass bottle', 'Plastic bottle cap', 'Metal bottle cap', 'Broken glass',
- 	'Food Can', 'Aerosol', 'Drink can', 'Toilet tube', 'Other carton',
-	'Egg carton', 'Drink carton', 'Corrugated carton', 'Meal carton',
- 	'Pizza box', 'Paper cup', 'Disposable plastic cup', 'Foam cup',
- 	'Glass cup', 'Other plastic cup', 'Food waste', 'Glass jar', 'Plastic lid',
- 	'Metal lid', 'Other plastic', 'Magazine paper', 'Tissues', 'Wrapping paper',
- 	'Normal paper', 'Paper bag', 'Plastified paper bag', 'Plastic film',
- 	'Six pack rings', 'Garbage bag', 'Other plastic wrapper',
- 	'Single-use carrier bag', 'Polypropylene bag', 'Crisp packet', 'Spread tub',
- 	'Tupperware', 'Disposable food container', 'Foam food container',
- 	'Other plastic container', 'Plastic glooves', 'Plastic utensils', 'Pop tab',
- 	'Rope & strings', 'Scrap metal', 'Shoe', 'Squeezable tube', 'Plastic straw',
- 	'Paper straw', 'Styrofoam piece', 'Unlabeled litter', 'Cigarette')
-
-taco_dataset =  dataset_base.copy({
-    'name': 'Taco',
-
-    'train_images': './data/taco/images',
-    'train_info':   './data/taco/annotations/taco.json',
-
-    'valid_images': './data/taco/images',
-    'valid_info':   './data/taco/annotations/taco.json',
-
-    'has_gt': True,
-    'class_names': TACO_CLASSES,
-    'label_map': TACO_LABEL_MAP
-})
 # ----------------------- TRANSFORMS ----------------------- #
 
 resnet_transform = Config({
@@ -535,13 +486,13 @@ coco_base_config = Config({
 
     # SSD data augmentation parameters
     # Randomize hue, vibrance, etc.
-    'augment_photometric_distort': False,
+    'augment_photometric_distort': True,
     # Have a chance to scale down the image and pad (to emulate smaller detections)
     'augment_expand': True,
     # Potentialy sample a random crop from the image and put it in a random place
-    'augment_random_sample_crop': False,
+    'augment_random_sample_crop': True,
     # Mirror the image with a probability of 1/2
-    'augment_random_mirror': False,
+    'augment_random_mirror': True,
     # Flip the image vertically with a probability of 1/2
     'augment_random_flip': False,
     # With uniform probability, rotate the image [0,90,180,270] degrees
@@ -553,7 +504,7 @@ coco_base_config = Config({
 
     # If using batchnorm anywhere in the backbone, freeze the batchnorm layer during training.
     # Note: any additional batch norm layers after the backbone will not be frozen.
-    'freeze_bn': True,
+    'freeze_bn': False,
 
     # Set this to a config object if you want an FPN (inherit from fpn_base). See fpn_base for details.
     'fpn': None,
@@ -713,10 +664,9 @@ yolact_base_config = coco_base_config.copy({
     'max_size': 550,
     
     # Training params
-    'lr': 1e-3,
-    'lr_steps': (100000, 150000, 175000),
-    'max_iter': 200000,
-
+    'lr_steps': (280000, 600000, 700000, 750000),
+    'max_iter': 800000,
+    
     # Backbone Settings
     'backbone': resnet101_backbone.copy({
         'selected_layers': list(range(1, 4)),
