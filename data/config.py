@@ -217,11 +217,11 @@ TACO_CLASSES = ('Aluminium foil', 'Battery', 'Aluminium blister pack',
 taco_dataset =  dataset_base.copy({
     'name': 'Taco',
 
-    'train_images': './data/taco/images',
-    'train_info':   './data/taco/annotations/taco_train.json',
+    'train_images': './data/taco',
+    'train_info':   './data/taco/annotations_0_train.json',
 
     'valid_images': './data/taco/images',
-    'valid_info':   './data/taco/annotations/taco_val.json',
+    'valid_info':   './data/taco/annotations_0_val.json',
 
     'has_gt': True,
     'class_names': TACO_CLASSES,
