@@ -217,11 +217,11 @@ TACO_CLASSES = ('Aluminium foil', 'Battery', 'Aluminium blister pack',
 taco_dataset =  dataset_base.copy({
     'name': 'Taco',
 
-    'train_images': './data/taco',
-    'train_info':   './data/taco/annotations_0_train.json',
+    'train_images': 'data/taco',
+    'train_info':   'data/taco/annotations_0_train.json',
 
-    'valid_images': './data/taco/images',
-    'valid_info':   './data/taco/annotations_0_val.json',
+    'valid_images': 'data/taco/images',
+    'valid_info':   'data/taco/annotations_0_val.json',
 
     'has_gt': True,
     'class_names': TACO_CLASSES,
@@ -292,7 +292,7 @@ efficientnetb0_backbone = backbone_base.copy({
 
 efficientnetb6_backbone = backbone_base.copy({
     'name': "EfficientNet B6",
-    "path": 'efficientnet-b6-c76e70fd.pth',
+    "path": 'efficientnet-b4-6ed6700e.pth',
     'type': EfficientNetB6Backbone,
     'args': ([3, 4, 23, 3],), #fake
     "transform": efficient_transform,
