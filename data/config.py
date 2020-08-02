@@ -1,4 +1,5 @@
 from backbone import ResNetBackbone, VGGBackbone, ResNetBackboneGN, DarkNetBackbone
+from eff import EfficientNetB0Backbone, EfficientNetB6Backbone
 from math import sqrt
 import torch
 
@@ -55,13 +56,13 @@ COCO_LABEL_MAP = { 1:  1,  2:  2,  3:  3,  4:  4,  5:  5,  6:  6,  7:  7,  8:  8
                   82: 73, 84: 74, 85: 75, 86: 76, 87: 77, 88: 78, 89: 79, 90: 80}
 
 TACO_LABEL_MAP = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10, 
-                10: 11, 11: 12, 12: 13, 13: 14, 14: 15, 15: 16, 16: 17, 17: 18,
-                18: 19, 19: 20, 20: 21, 21: 22, 22: 23, 23: 24, 24: 25, 25: 26,
-                26: 27, 27: 28, 28: 29, 29: 30, 30: 31, 31: 32, 32: 33, 33: 34,
-                34: 35, 35: 36, 36: 37, 37: 38, 38: 39, 39: 40, 40: 41, 41: 42,
-                42: 43, 43: 44, 44: 45, 45: 46, 46: 47, 47: 48, 48: 49, 49: 50,
-                50: 51, 51: 52, 52: 53, 53: 54, 54: 55, 55: 56, 56: 57, 57: 58,
-                58: 59, 59: 60}
+		10: 11, 11: 12, 12: 13, 13: 14, 14: 15, 15: 16, 16: 17, 17: 18,
+ 		18: 19, 19: 20, 20: 21, 21: 22, 22: 23, 23: 24, 24: 25, 25: 26,
+		26: 27, 27: 28, 28: 29, 29: 30, 30: 31, 31: 32, 32: 33, 33: 34,
+ 		34: 35, 35: 36, 36: 37, 37: 38, 38: 39, 39: 40, 40: 41, 41: 42,
+		42: 43, 43: 44, 44: 45, 45: 46, 46: 47, 47: 48, 48: 49, 49: 50,
+		50: 51, 51: 52, 52: 53, 53: 54, 54: 55, 55: 56, 56: 57, 57: 58,
+		58: 59, 59: 60}
 
 # ----------------------- CONFIG CLASS ----------------------- #
 
@@ -83,7 +84,7 @@ class Config(object):
         Copies this config into a new config object, making
         the changes given by new_config_dict.
         """
-
+        
         ret = Config(vars(self))
         
         for key, val in new_config_dict.items():
@@ -146,7 +147,8 @@ coco2014_dataset = dataset_base.copy({
 
 coco2017_dataset = dataset_base.copy({
     'name': 'COCO 2017',
-    
+    'train_images': './data/coco/train2017/',
+    'valid_images': './data/coco/val2017/',
     'train_info': './data/coco/annotations/instances_train2017.json',
     'valid_info': './data/coco/annotations/instances_val2017.json',
 
@@ -216,18 +218,15 @@ taco_dataset =  dataset_base.copy({
     'name': 'Taco',
 
     'train_images': './data/taco/images',
-    'train_info':   './data/taco/annotations/taco.json',
+    'train_info':   './data/taco/annotations/taco_train.json',
 
     'valid_images': './data/taco/images',
-    'valid_info':   './data/taco/annotations/taco.json',
+    'valid_info':   './data/taco/annotations/taco_val.json',
 
     'has_gt': True,
     'class_names': TACO_CLASSES,
     'label_map': TACO_LABEL_MAP
 })
-
-
-
 # ----------------------- TRANSFORMS ----------------------- #
 
 resnet_transform = Config({
@@ -253,7 +252,12 @@ darknet_transform = Config({
     'to_float': True,
 })
 
-
+efficient_transform = Config({
+    'channel_order': 'RGB',
+    'normalize': True,
+    'subtract_means': False,
+    'to_float': False,
+})
 
 
 
@@ -274,6 +278,31 @@ backbone_base = Config({
     'preapply_sqrt': True,
     'use_square_anchors': False,
 })
+
+efficientnetb0_backbone = backbone_base.copy({
+    'name': "EfficientNet B0",
+    "path": 'efficientnet-b0-355c32eb.pth',
+    'type': EfficientNetB0Backbone,
+    'args': ([3, 4, 23, 3],), #fake
+    "transform": efficient_transform,
+    'selected_layers': list(range(5, 11)),
+    'pred_scales': [[1]]*6,
+    'pred_aspect_ratios': [ [[0.66685089, 1.7073535, 0.87508774, 1.16524493, 0.49059086]] ] * 6,
+})
+
+efficientnetb6_backbone = backbone_base.copy({
+    'name': "EfficientNet B6",
+    "path": 'efficientnet-b6-c76e70fd.pth',
+    'type': EfficientNetB6Backbone,
+    'args': ([3, 4, 23, 3],), #fake
+    "transform": efficient_transform,
+    'selected_layers': list(range(5, 11)),
+    'pred_scales': [[1]]*6,
+    'pred_aspect_ratios': [ [[0.66685089, 1.7073535, 0.87508774, 1.16524493, 0.49059086]] ] * 6,
+})
+
+
+
 
 resnet101_backbone = backbone_base.copy({
     'name': 'ResNet101',
@@ -546,7 +575,7 @@ coco_base_config = Config({
     # Mirror the image with a probability of 1/2
     'augment_random_mirror': True,
     # Flip the image vertically with a probability of 1/2
-    'augment_random_flip': False,
+    'augment_random_flip': True,
     # With uniform probability, rotate the image [0,90,180,270] degrees
     'augment_random_rot90': False,
 
@@ -716,9 +745,10 @@ yolact_base_config = coco_base_config.copy({
     'max_size': 550,
     
     # Training params
-    'lr_steps': (280000, 600000, 700000, 750000),
-    'max_iter': 800000,
-    
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
+
     # Backbone Settings
     'backbone': resnet101_backbone.copy({
         'selected_layers': list(range(1, 4)),
@@ -755,6 +785,8 @@ yolact_base_config = coco_base_config.copy({
     'use_semantic_segmentation_loss': True,
 })
 
+
+
 yolact_im400_config = yolact_base_config.copy({
     'name': 'yolact_im400',
 
@@ -785,6 +817,37 @@ yolact_darknet53_config = yolact_base_config.copy({
         'use_pixel_scales': True,
         'preapply_sqrt': False,
         'use_square_anchors': True, # This is for backward compatability with a bug
+    }),
+})
+
+yolact_efficientnetb0_config = yolact_base_config.copy({
+    'name': 'yolact_efficientnetb0',
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'backbone': efficientnetb0_backbone.copy({
+        'selected_layers': [10,14,15],
+        
+        'pred_scales': yolact_base_config.backbone.pred_scales,
+        'pred_aspect_ratios': yolact_base_config.backbone.pred_aspect_ratios,
+        'use_pixel_scales': True,
+        'preapply_sqrt': False,
+        'use_square_anchors': False, # This is for backward compatability with a bug
+    }),
+})
+
+yolact_efficientnetb6_config = yolact_base_config.copy({
+    'name': 'yolact_efficientnetb6',
+    #'max_size': 400,
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'backbone': efficientnetb6_backbone.copy({
+        'selected_layers': [9, 21, 31],
+        #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
+        'pred_scales': yolact_base_config.backbone.pred_scales,
+        'pred_aspect_ratios': yolact_base_config.backbone.pred_aspect_ratios,
+        'use_pixel_scales': True,
+        'preapply_sqrt': False,
+        'use_square_anchors': False, # This is for backward compatability with a bug
     }),
 })
 
@@ -822,6 +885,7 @@ yolact_resnet50_pascal_config = yolact_resnet50_config.copy({
 yolact_taco_config = yolact_base_config.copy({
     'name': 'yolact_taco',
 
+    'max_size': 550,
     # Dataset stuff
     'dataset': taco_dataset,
     'num_classes': len(taco_dataset.class_names) + 1,
@@ -834,6 +898,26 @@ yolact_taco_config = yolact_base_config.copy({
     'lr_steps': (100000, 150000, 175000),
     'max_iter': 200000,
 })
+
+yolact_taco_efficientnetb6_config = yolact_efficientnetb6_config.copy({
+    'name': 'yolact_taco_efficientnetb6',
+
+    # Dataset stuff
+    'dataset': taco_dataset,
+    'num_classes': len(taco_dataset.class_names) + 1,
+
+    # Image Size
+    'max_size': 550,
+    
+    # Training params
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
+    
+    #'freeze_bn': True
+})
+
+
 
 # ----------------------- YOLACT++ CONFIGS ----------------------- #
 
@@ -872,6 +956,76 @@ yolact_plus_resnet50_config = yolact_plus_base_config.copy({
         'use_square_anchors': False,
     }),
 })
+
+
+yolact_plus_taco_config = yolact_plus_base_config.copy({
+    'name': 'yolact_taco',
+
+    'max_size': 550,
+    # Dataset stuff
+    'dataset': taco_dataset,
+    'num_classes': len(taco_dataset.class_names) + 1,
+
+    # Image Size
+    'max_size': 550,
+    
+    # Training params
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
+})
+
+
+yolact_plus_efficientnetb0_config = yolact_plus_base_config.copy({
+    'name': 'yolact_plus_efficientnetb0',
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'backbone': efficientnetb0_backbone.copy({
+        'selected_layers': [10,14,15],
+        
+        'pred_scales': yolact_plus_base_config.backbone.pred_scales,
+        'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
+        'use_pixel_scales': True,
+        'preapply_sqrt': False,
+        'use_square_anchors': False, # This is for backward compatability with a bug
+    }),
+})
+
+yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
+    'name': 'yolact_plus_efficientnetb6',
+    #'max_size': 400,
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'backbone': efficientnetb6_backbone.copy({
+        'selected_layers': [9, 21, 31],
+        #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
+        'pred_scales': yolact_plus_base_config.backbone.pred_scales,
+        'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
+        'use_pixel_scales': True,
+        'preapply_sqrt': False,
+        'use_square_anchors': False, # This is for backward compatability with a bug
+    }),
+})
+
+yolact_plus_taco_efficientnetb0_config = yolact_plus_efficientnetb0_config.copy({
+    'name': 'yolact_taco_efficientnetb7',
+
+    
+    # Dataset stuff
+    'dataset': taco_dataset,
+    'num_classes': len(taco_dataset.class_names) + 1,
+
+    # Image Size
+    'max_size': 550,
+    
+    # Training params
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
+    
+    
+})
+
 
 
 # Default config
