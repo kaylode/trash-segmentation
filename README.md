@@ -1,7 +1,7 @@
 # Real-Time Trash Instaces Segmentation
  Project for studying
 
-**Introduction**
+## **Introduction**
 
 ![alt text](https://miro.medium.com/max/1400/0*QeOs5RvXlkbDkLOy.png)
 ![alt text](https://miro.medium.com/max/1400/1*n64Z12hTZMph6H5EUbG0Nw.png)
@@ -42,9 +42,19 @@ Backbone Resnet101: [Link](https://drive.google.com/file/d/1tvqFPd4bJtakOlmn-uIA
 - **COCO Annotation Format Guide**
 [![Watch the video](https://img.youtube.com/vi/h6s61a_pqfM/maxresdefault.jpg)](https://www.youtube.com/watch?v=h6s61a_pqfM)
 	
-# Hướng dẫn cài đặt và sử dụng trên colab
+# **Hướng dẫn cài đặt và sử dụng trên colab**
 - Vào link này, thêm lối tắt drive của dataset và annotiation về drive của mình: 
 	- [Link dataset và annotation của TACO](https://drive.google.com/file/d/1Ol3OcfjAfRul0lxKuV6ezaKP89HXqDMz/view?usp=sharing)
 - Thêm lối tắt 3 file pretrained weights ở trên về drive của mình
 
 - Tải [file colab](https://colab.research.google.com/drive/1ZVlF6K5HfcsS_G1tW_esY542n80CZOn0?usp=sharing) và chạy thử
+
+# **Hướng dẫn thêm dataset mới**
+- Đầu tiên clone source code của Yolact từ trang [github](https://github.com/dbolya/yolact) của họ về
+- Vào thư mục yolact/data mở file config.py và làm giống như ví dụ dưới đây
+
+![alt text](images/config_guide.png)
+![alt text](images/config_guide2.png)
+
+- Sau đó bạn push folder yolact đó lên github cá nhân, và cũng upload dataset mới lên drive cá nhân
+- Tham khảo colab của mình, thay vào đó link github và drive của bạn
