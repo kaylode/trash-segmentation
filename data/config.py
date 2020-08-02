@@ -147,10 +147,10 @@ coco2014_dataset = dataset_base.copy({
 
 coco2017_dataset = dataset_base.copy({
     'name': 'COCO 2017',
-    'train_images': './data/coco/train2017/',
-    'valid_images': './data/coco/val2017/',
-    'train_info': './data/coco/annotations/instances_train2017.json',
-    'valid_info': './data/coco/annotations/instances_val2017.json',
+    'train_images': '../drive/My Drive/COCO/2017/train2017',
+    'valid_images': '../drive/My Drive/COCO/2017/val2017',
+    'train_info': '../drive/My Drive/COCO/2017/annotations/instances_train2017.json',
+    'valid_info': '../drive/My Drive/COCO/2017/annotations/instances_val2017.json',
 
     'label_map': COCO_LABEL_MAP
 })
@@ -837,12 +837,12 @@ yolact_efficientnetb0_config = yolact_base_config.copy({
 
 yolact_efficientnetb6_config = yolact_base_config.copy({
     'name': 'yolact_efficientnetb6',
-    #'max_size': 400,
+    #'max_size': 380,
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
     'backbone': efficientnetb6_backbone.copy({
         'selected_layers': [9, 21, 31],
-        #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
+        #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 380)] for x in yolact_base_config.backbone.pred_scales],
         'pred_scales': yolact_base_config.backbone.pred_scales,
         'pred_aspect_ratios': yolact_base_config.backbone.pred_aspect_ratios,
         'use_pixel_scales': True,
