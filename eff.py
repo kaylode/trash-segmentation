@@ -207,7 +207,7 @@ class EfficientNetB0Backbone(nn.Module):
 class EfficientNetB6Backbone(nn.Module):
     def __init__(self, layer = [1, 2, 2, 3, 3, 4]):
         super().__init__()
-        blocks_args, global_params= get_model_params('efficientnet-b4', None)
+        blocks_args, global_params= get_model_params('efficientnet-b6', None)
         
         assert isinstance(blocks_args, list), 'blocks_args should be a list'
         assert len(blocks_args) > 0, 'block args must be greater than 0'
@@ -265,7 +265,7 @@ class EfficientNetB6Backbone(nn.Module):
 
 
     def init_backbone(self, path):
-        load_pretrained_weights(self, 'efficientnet-b4', weights_path=path, load_fc=False, advprop=False)
+        load_pretrained_weights(self, 'efficientnet-b6', weights_path=path, load_fc=False, advprop=False)
 
     def forward(self, inputs):
         """use convolution layer to extract feature .
