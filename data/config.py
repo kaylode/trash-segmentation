@@ -147,10 +147,10 @@ coco2014_dataset = dataset_base.copy({
 
 coco2017_dataset = dataset_base.copy({
     'name': 'COCO 2017',
-    'train_images': '../drive/My Drive/COCO/2017/train2017',
-    'valid_images': '../drive/My Drive/COCO/2017/val2017',
-    'train_info': '../drive/My Drive/COCO/2017/annotations/instances_train2017.json',
-    'valid_info': '../drive/My Drive/COCO/2017/annotations/instances_val2017.json',
+    'train_images': 'data/coco/train2017',
+    'valid_images': 'data/coco/val2017',
+    'train_info': 'data/coco/annotations/instances_train2017.json',
+    'valid_info': 'data/coco/annotations/instances_val2017.json',
 
     'label_map': COCO_LABEL_MAP
 })
