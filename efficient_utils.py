@@ -599,13 +599,9 @@ def load_pretrained_weights(model, model_name, weights_path=None, load_fc=True, 
         advprop (bool): Whether to load pretrained weights
                         trained with advprop (valid when weights_path is None).
     """
-    if isinstance(weights_path,str):
-        state_dict = torch.load(url_map[model_name])
-    else:
-        # AutoAugment or Advprop (different preprocessing)
-        url_map_ = url_map_advprop if advprop else url_map
-        state_dict = model_zoo.load_url(url_map_[model_name])
     
+    state_dict = torch.load(url_map[model_name])
+
     if load_fc:
         ret = model.load_state_dict(state_dict, strict=False)
         assert not ret.missing_keys, f'Missing keys when loading pretrained weights: {ret.missing_keys}'
