@@ -825,7 +825,7 @@ yolact_efficientnetb0_config = yolact_base_config.copy({
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
     'backbone': efficientnetb0_backbone.copy({
-        'selected_layers': [10,14,15],
+        'selected_layers': [4,10,15],
         
         'pred_scales': yolact_base_config.backbone.pred_scales,
         'pred_aspect_ratios': yolact_base_config.backbone.pred_aspect_ratios,
@@ -981,7 +981,7 @@ yolact_plus_efficientnetb0_config = yolact_plus_base_config.copy({
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
     'backbone': efficientnetb0_backbone.copy({
-        'selected_layers': [10,14,15],
+        'selected_layers': [4,10,15],
         
         'pred_scales': yolact_plus_base_config.backbone.pred_scales,
         'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
