@@ -746,7 +746,7 @@ yolact_base_config = coco_base_config.copy({
     
     # Training params
     'lr': 1e-3,
-    'lr_steps': (100000, 150000, 175000),
+    'lr_steps': (100000, 125000, 150000, 175000),
     'max_iter': 200000,
 
     # Backbone Settings
