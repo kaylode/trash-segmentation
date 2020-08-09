@@ -988,6 +988,12 @@ yolact_plus_efficientnetb0_config = yolact_plus_base_config.copy({
     'name': 'yolact_plus_efficientnetb0',
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
+
+    # Training params
+    'lr': 1e-4,
+    'lr_steps': (250000, 275000),
+    'max_iter': 300000,
+
     'backbone': efficientnetb0_backbone.copy({
         'selected_layers': [4,10,15],
         
@@ -1004,6 +1010,12 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
     #'max_size': 400,
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
+
+    # Training params
+    'lr': 3e-5,
+    'lr_steps': (250000, 275000),
+    'max_iter': 300000,
+
     'backbone': efficientnetb6_backbone.copy({
         'selected_layers': [14, 30, 44],
         #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
