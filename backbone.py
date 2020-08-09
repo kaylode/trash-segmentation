@@ -443,13 +443,72 @@ class VGGBackbone(nn.Module):
         self.channels.append(self.in_channels)
         self.layers.append(layer)
         
-                
+
+class EfficientDetBackbone(nn.Module):
+    def __init__(self, compound_coef=0, load_weights=False, **kwargs):
+        super(EfficientDetBackbone, self).__init__()
+        self.compound_coef = compound_coef
+
+        self.backbone_compound_coef = [0, 1, 2, 3, 4, 5, 6, 6]
+        self.fpn_num_filters = [64, 88, 112, 160, 224, 288, 384, 384]
+        self.fpn_cell_repeats = [3, 4, 5, 6, 7, 7, 8, 8]
+        self.input_sizes = [512, 640, 768, 896, 1024, 1280, 1280, 1536]
+        self.box_class_repeats = [3, 3, 3, 4, 4, 4, 5, 5]
+        self.anchor_scale = [4., 4., 4., 4., 4., 4., 4., 5.]
+        self.aspect_ratios = kwargs.get('ratios', [(1.0, 1.0), (1.4, 0.7), (0.7, 1.4)])
+        self.num_scales = len(kwargs.get('scales', [2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)]))
+        self.conv_channel_coef = {
+            # the channels of P3/P4/P5.
+            0: [40, 112, 320],
+            1: [40, 112, 320],
+            2: [48, 120, 352],
+            3: [48, 136, 384],
+            4: [56, 160, 448],
+            5: [64, 176, 512],
+            6: [72, 200, 576],
+            7: [72, 200, 576],
+        }
+
+        selected_layers = {
+            '0': [4,10,15],
+            '6': [14, 30, 44],
+        }
+
+        self.selected_layer = selected_layers[str(compound_coef)]
+        num_anchors = len(self.aspect_ratios) * self.num_scales
+
+        
+
+        self.model_name = f'efficientnet-b{compound_coef}'
+        self.backbone_net = EfficientNetB0Backbone()
+        self.channels = self.backbone_net.channels
+        self.backbone_modules = self.backbone_net.backbone_modules
+    def freeze_bn(self):
+        for m in self.modules():
+            if isinstance(m, nn.BatchNorm2d):
+                m.eval()
+
+    def forward(self, inputs):
+        max_size = inputs.shape[-1]
+
+        layers = self.backbone_net(inputs)
+        #features = [layers[i] for i in self.selected_layer]
+        #features = self.bifpn(features)
+
+        return layers#features
+
+    def init_backbone(self, path):
+        load_pretrained_weights(self.backbone_net, self.model_name)
+        
+
+
 
 
 def construct_backbone(cfg):
+    
     """ Constructs a backbone given a backbone config object (see config.py). """
     backbone = cfg.type(*cfg.args)
-
+    return backbone
     # Add downsampling layers until we reach the number we need
     num_layers = max(cfg.selected_layers) + 1
 

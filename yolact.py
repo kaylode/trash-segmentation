@@ -12,10 +12,11 @@ from data.config import cfg, mask_type
 from layers import Detect
 from layers.interpolate import InterpolateModule
 from backbone import construct_backbone
-
+from efficientdet.model import BiFPN
 import torch.backends.cudnn as cudnn
 from utils import timer
 from utils.functions import MovingAverage, make_net
+from efficient_utils import load_pretrained_weights
 
 # This is required for Pytorch 1.0.1 on Windows to initialize Cuda on some driver versions.
 # See the bug report here: https://github.com/pytorch/pytorch/issues/17108
@@ -374,7 +375,17 @@ class FastMaskIoUNet(ScriptModuleWrapper):
 
         return maskiou_p
 
+def BiFPNLayers(num_filters, conv_channel_coef, fpn_cell_repeats, load_weights = False):
 
+    bifpn = nn.Sequential(
+                *[BiFPN(num_filters, 
+                        conv_channel_coef,
+                        True if _ == 0 else False,
+                        attention=True)
+                        for _ in range(fpn_cell_repeats)])
+    if load_weights:
+        load_pretrained_weights(bifpn, 'efficientnet-b0', load_bifpn = True)
+    return bifpn
 
 class Yolact(nn.Module):
     """
@@ -436,10 +447,19 @@ class Yolact(nn.Module):
 
         if cfg.fpn is not None:
             # Some hacky rewiring to accomodate the FPN
-            self.fpn = FPN([src_channels[i] for i in self.selected_layers])
+            if cfg.use_bifpn:
+                self.fpn = BiFPNLayers(
+                    self.backbone.fpn_num_filters[self.backbone.compound_coef],
+                    self.backbone.conv_channel_coef[self.backbone.compound_coef],
+                    self.backbone.fpn_cell_repeats[self.backbone.compound_coef], load_weights=True)
+            else:
+                self.fpn = FPN([src_channels[i] for i in self.selected_layers])
+            
             self.selected_layers = list(range(len(self.selected_layers) + cfg.fpn.num_downsample))
             src_channels = [cfg.fpn.num_features] * len(self.selected_layers)
-
+     
+            
+            
 
         self.prediction_layers = nn.ModuleList()
         cfg.num_heads = len(self.selected_layers)
@@ -575,6 +595,9 @@ class Yolact(nn.Module):
                 # Use backbone.selected_layers because we overwrote self.selected_layers
                 outs = [outs[i] for i in cfg.backbone.selected_layers]
                 outs = self.fpn(outs)
+    
+            
+
 
         proto_out = None
         if cfg.mask_type == mask_type.lincomb and cfg.eval_mask_branch:
@@ -614,6 +637,8 @@ class Yolact(nn.Module):
                 pred_outs['inst'] = []
             
             for idx, pred_layer in zip(self.selected_layers, self.prediction_layers):
+              
+                
                 pred_x = outs[idx]
 
                 if cfg.mask_type == mask_type.lincomb and cfg.mask_proto_prototypes_as_features:

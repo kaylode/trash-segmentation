@@ -569,6 +569,19 @@ url_map = {
     'efficientnet-b7': 'weights/efficientnet-b7-dcc49843.pth',
 }
 
+
+url_map_det = {
+    'efficientnet-b0': 'weights/efficientdet-d0.pth',
+    'efficientnet-b1': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b1-f1951068.pth',
+    'efficientnet-b2': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b2-8bb594d6.pth',
+    'efficientnet-b3': 'weights/efficientnet-b3-5fb5a3c3.pth',
+    'efficientnet-b4': 'weights/efficientnet-b4-6ed6700e.pth',
+    'efficientnet-b5': 'weights/efficientnet-b5-b6417697.pth',
+    'efficientnet-b6': 'weights/efficientnet-b6-c76e70fd.pth',
+    'efficientnet-b7': 'weights/efficientnet-b7-dcc49843.pth',
+}
+
+
 # train with Adversarial Examples(AdvProp)
 # check more details in paper(Adversarial Examples Improve Image Recognition)
 url_map_advprop = {
@@ -586,7 +599,7 @@ url_map_advprop = {
 # TODO: add the petrained weights url map of 'efficientnet-l2'
 
 
-def load_pretrained_weights(model, model_name, weights_path=None, load_fc=True, advprop=False):
+def load_pretrained_weights(model, model_name, weights_path=None, load_fc=False, advprop=False, load_bifpn = False):
     """Loads pretrained weights from weights path or download using url.
 
     Args:
@@ -600,22 +613,33 @@ def load_pretrained_weights(model, model_name, weights_path=None, load_fc=True, 
                         trained with advprop (valid when weights_path is None).
     """
     
-    state_dict = torch.load(url_map[model_name])
-
-    if load_fc:
-        ret = model.load_state_dict(state_dict, strict=False)
-        assert not ret.missing_keys, f'Missing keys when loading pretrained weights: {ret.missing_keys}'
-    else:
+    if not load_bifpn:
         state_dict = torch.load(url_map[model_name])
-        state_dict = OrderedDict((k.replace("_blocks", 'layers') if "_blocks" in k else k, v) for k, v in state_dict.items())
+        if load_fc:
+            ret = model.load_state_dict(state_dict, strict=False)
+            assert not ret.missing_keys, f'Missing keys when loading pretrained weights: {ret.missing_keys}'
+        else:
+            state_dict = torch.load(url_map[model_name])
+            state_dict = OrderedDict((k.replace("_blocks", 'layers') if "_blocks" in k else k, v) for k, v in state_dict.items())
 
-        state_dict.pop('_fc.weight')
-        state_dict.pop('_fc.bias')
-        state_dict.pop('_conv_head.weight')
+            state_dict.pop('_fc.weight')
+            state_dict.pop('_fc.bias')
+            state_dict.pop('_conv_head.weight')
+            for key in list(state_dict.keys()):
+                if key.startswith("_bn1"):
+                    del state_dict[key]
+            
+            ret = model.load_state_dict(state_dict, strict=False)
+            print(ret)
+        print('Loaded pretrained weights for {}'.format(model_name))
+
+    else:
+        state_dict = torch.load(url_map_det[model_name])
+        state_dict = OrderedDict((k.replace('bifpn.',"") if 'bifpn.' in k else k, v) for k, v in state_dict.items())
+
         for key in list(state_dict.keys()):
-            if key.startswith("_bn1"):
+            if key.startswith("regressor") or key.startswith("classifier") or key.startswith("backbone_net"):
                 del state_dict[key]
-        
         ret = model.load_state_dict(state_dict, strict=False)
         print(ret)
-    print('Loaded pretrained weights for {}'.format(model_name))
+        print('Loaded pretrained weights for BiFPN')
