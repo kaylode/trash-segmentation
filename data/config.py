@@ -1015,12 +1015,12 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
     }),
 })
 
-yolact_efficientdet_config = yolact_plus_base_config.copy({
+yolact_plus_efficientdet_config = yolact_plus_base_config.copy({
     'name': 'yolact_plus_efficientdet',
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
 
-    'lr': 2e-3,
+    'lr': 1e-3,
     'lr_steps': (300000, 350000, 375000),
     'max_iter': 400000,
 
@@ -1029,7 +1029,7 @@ yolact_efficientdet_config = yolact_plus_base_config.copy({
         'use_conv_downsample': False,
         'num_features': 256,
     }),
-    #'max_size':512,
+    'max_size':512,
     'backbone': efficientdet_backbone.copy({
         'selected_layers': [14, 30, 44],
         
