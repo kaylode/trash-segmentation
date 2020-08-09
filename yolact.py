@@ -384,7 +384,7 @@ def BiFPNLayers(num_filters, conv_channel_coef, fpn_cell_repeats, load_weights =
                         attention=True)
                         for _ in range(fpn_cell_repeats)])
     if load_weights:
-        load_pretrained_weights(bifpn, 'efficientnet-b0', load_bifpn = True)
+        load_pretrained_weights(bifpn, 'efficientnet-b6', load_bifpn = load_weights)
     return bifpn
 
 class Yolact(nn.Module):
@@ -451,7 +451,7 @@ class Yolact(nn.Module):
                 self.fpn = BiFPNLayers(
                     self.backbone.fpn_num_filters[self.backbone.compound_coef],
                     self.backbone.conv_channel_coef[self.backbone.compound_coef],
-                    self.backbone.fpn_cell_repeats[self.backbone.compound_coef], load_weights=True)
+                    self.backbone.fpn_cell_repeats[self.backbone.compound_coef], load_weights=False)
             else:
                 self.fpn = FPN([src_channels[i] for i in self.selected_layers])
             

@@ -559,13 +559,13 @@ def get_model_params(model_name, override_params):
 # train with Standard methods
 # check more details in paper(EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks)
 url_map = {
-    'efficientnet-b0': 'weights/efficientnet-b0-355c32eb.pth',
+    'efficientnet-b0': 'weights/efficientnetb0-coco.pth',
     'efficientnet-b1': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b1-f1951068.pth',
     'efficientnet-b2': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b2-8bb594d6.pth',
     'efficientnet-b3': 'weights/efficientnet-b3-5fb5a3c3.pth',
     'efficientnet-b4': 'weights/efficientnet-b4-6ed6700e.pth',
     'efficientnet-b5': 'weights/efficientnet-b5-b6417697.pth',
-    'efficientnet-b6': 'weights/efficientnet-b6-c76e70fd.pth',
+    'efficientnet-b6': 'weights/efficientnetb6.pth',
     'efficientnet-b7': 'weights/efficientnet-b7-dcc49843.pth',
 }
 
@@ -577,7 +577,7 @@ url_map_det = {
     'efficientnet-b3': 'weights/efficientnet-b3-5fb5a3c3.pth',
     'efficientnet-b4': 'weights/efficientnet-b4-6ed6700e.pth',
     'efficientnet-b5': 'weights/efficientnet-b5-b6417697.pth',
-    'efficientnet-b6': 'weights/efficientnet-b6-c76e70fd.pth',
+    'efficientnet-b6': 'weights/efficientnetb6.pth',
     'efficientnet-b7': 'weights/efficientnet-b7-dcc49843.pth',
 }
 
@@ -620,14 +620,6 @@ def load_pretrained_weights(model, model_name, weights_path=None, load_fc=False,
             assert not ret.missing_keys, f'Missing keys when loading pretrained weights: {ret.missing_keys}'
         else:
             state_dict = torch.load(url_map[model_name])
-            state_dict = OrderedDict((k.replace("_blocks", 'layers') if "_blocks" in k else k, v) for k, v in state_dict.items())
-
-            state_dict.pop('_fc.weight')
-            state_dict.pop('_fc.bias')
-            state_dict.pop('_conv_head.weight')
-            for key in list(state_dict.keys()):
-                if key.startswith("_bn1"):
-                    del state_dict[key]
             
             ret = model.load_state_dict(state_dict, strict=False)
             print(ret)

@@ -3,6 +3,10 @@ import torch.nn as nn
 import pickle
 
 from collections import OrderedDict
+from efficientdet.model import BiFPN, EfficientNet
+from eff import EfficientNetB0Backbone, EfficientNetB6Backbone
+from efficient_utils import load_pretrained_weights
+
 
 try:
     from dcn_v2 import DCN
@@ -443,16 +447,18 @@ class VGGBackbone(nn.Module):
         self.channels.append(self.in_channels)
         self.layers.append(layer)
         
+                
 
 class EfficientDetBackbone(nn.Module):
-    def __init__(self, compound_coef=0, load_weights=False, **kwargs):
+    def __init__(self, compound_coef=6, load_weights=False, **kwargs):
         super(EfficientDetBackbone, self).__init__()
+        compound_coef=6
         self.compound_coef = compound_coef
 
         self.backbone_compound_coef = [0, 1, 2, 3, 4, 5, 6, 6]
-        self.fpn_num_filters = [64, 88, 112, 160, 224, 288, 384, 384]
+        self.fpn_num_filters = [256, 88, 112, 160, 224, 288, 256, 384]
         self.fpn_cell_repeats = [3, 4, 5, 6, 7, 7, 8, 8]
-        self.input_sizes = [512, 640, 768, 896, 1024, 1280, 1280, 1536]
+        self.input_sizes = [512, 640, 768, 896, 1024, 1280, 550, 1536]
         self.box_class_repeats = [3, 3, 3, 4, 4, 4, 5, 5]
         self.anchor_scale = [4., 4., 4., 4., 4., 4., 4., 5.]
         self.aspect_ratios = kwargs.get('ratios', [(1.0, 1.0), (1.4, 0.7), (0.7, 1.4)])
@@ -480,7 +486,7 @@ class EfficientDetBackbone(nn.Module):
         
 
         self.model_name = f'efficientnet-b{compound_coef}'
-        self.backbone_net = EfficientNetB0Backbone()
+        self.backbone_net = EfficientNetB6Backbone()
         self.channels = self.backbone_net.channels
         self.backbone_modules = self.backbone_net.backbone_modules
     def freeze_bn(self):

@@ -281,7 +281,7 @@ backbone_base = Config({
 
 efficientnetb0_backbone = backbone_base.copy({
     'name': "EfficientNet B0",
-    "path": 'efficientnet-b0-355c32eb.pth',
+    "path": 'efficientnetb0-coco.pth',
     'type': EfficientNetB0Backbone,
     'args': ([3, 4, 23, 3],), #fake
     "transform": efficient_transform,
@@ -292,7 +292,7 @@ efficientnetb0_backbone = backbone_base.copy({
 
 efficientnetb6_backbone = backbone_base.copy({
     'name': "EfficientNet B6",
-    "path": 'efficientnet-b4-6ed6700e.pth',
+    "path": 'efficientnetb6.pth',
     'type': EfficientNetB6Backbone,
     'args': ([3, 4, 23, 3],), #fake
     "transform": efficient_transform,
@@ -303,7 +303,7 @@ efficientnetb6_backbone = backbone_base.copy({
 
 efficientdet_backbone = backbone_base.copy({
     'name': "EfficientDet",
-    "path": 'efficientnet-b4-6ed6700e.pth',
+    "path": 'efficientnet-d6.pth',
     'type': EfficientDetBackbone,
     'args': (0,), #fake
     "transform": efficient_transform,
@@ -751,6 +751,11 @@ yolact_base_config = coco_base_config.copy({
 
     # Image Size
     'max_size': 550,
+    
+    # Training params
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
 
     # Backbone Settings
     'backbone': resnet101_backbone.copy({
@@ -828,27 +833,6 @@ yolact_efficientnetb0_config = yolact_base_config.copy({
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
     'backbone': efficientnetb0_backbone.copy({
-        'selected_layers': [4,10,15],
-        
-        'pred_scales': yolact_base_config.backbone.pred_scales,
-        'pred_aspect_ratios': yolact_base_config.backbone.pred_aspect_ratios,
-        'use_pixel_scales': True,
-        'preapply_sqrt': False,
-        'use_square_anchors': False, # This is for backward compatability with a bug
-    }),
-})
-
-yolact_efficientdet_config = yolact_base_config.copy({
-    'name': 'yolact_efficientdet',
-    'dataset': coco2017_dataset,
-    'num_classes': len(coco2017_dataset.class_names) + 1,
-    'use_bifpn' : True,
-    'fpn': fpn_base.copy({
-        'use_conv_downsample': False,
-        'num_features': 64,
-    }),
-    'max_size':512,
-    'backbone': efficientdet_backbone.copy({
         'selected_layers': [4,10,15],
         
         'pred_scales': yolact_base_config.backbone.pred_scales,
@@ -1023,6 +1007,32 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
     'backbone': efficientnetb6_backbone.copy({
         'selected_layers': [14, 30, 44],
         #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
+        'pred_scales': yolact_plus_base_config.backbone.pred_scales,
+        'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
+        'use_pixel_scales': True,
+        'preapply_sqrt': False,
+        'use_square_anchors': False, # This is for backward compatability with a bug
+    }),
+})
+
+yolact_efficientdet_config = yolact_plus_base_config.copy({
+    'name': 'yolact_plus_efficientdet',
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
+
+    'lr': 2e-3,
+    'lr_steps': (300000, 350000, 375000),
+    'max_iter': 400000,
+
+    'use_bifpn' : True,
+    'fpn': fpn_base.copy({
+        'use_conv_downsample': False,
+        'num_features': 256,
+    }),
+    #'max_size':512,
+    'backbone': efficientdet_backbone.copy({
+        'selected_layers': [14, 30, 44],
+        
         'pred_scales': yolact_plus_base_config.backbone.pred_scales,
         'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
         'use_pixel_scales': True,
