@@ -575,15 +575,15 @@ coco_base_config = Config({
 
     # SSD data augmentation parameters
     # Randomize hue, vibrance, etc.
-    'augment_photometric_distort': False,
+    'augment_photometric_distort': True,
     # Have a chance to scale down the image and pad (to emulate smaller detections)
-    'augment_expand': False,
+    'augment_expand': True,
     # Potentialy sample a random crop from the image and put it in a random place
     'augment_random_sample_crop': True,
     # Mirror the image with a probability of 1/2
-    'augment_random_mirror': False,
+    'augment_random_mirror': True,
     # Flip the image vertically with a probability of 1/2
-    'augment_random_flip': False,
+    'augment_random_flip': True,
     # With uniform probability, rotate the image [0,90,180,270] degrees
     'augment_random_rot90': False,
 
@@ -990,8 +990,8 @@ yolact_plus_efficientnetb0_config = yolact_plus_base_config.copy({
     'num_classes': len(coco2017_dataset.class_names) + 1,
 
     # Training params
-    'lr': 1e-4,
-    'lr_steps': (250000, 275000),
+    'lr': 1e-3,
+    'lr_steps': (150000, 250000, 275000),
     'max_iter': 300000,
 
     'backbone': efficientnetb0_backbone.copy({
@@ -1012,8 +1012,8 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
     'num_classes': len(coco2017_dataset.class_names) + 1,
 
     # Training params
-    'lr': 3e-5,
-    'lr_steps': (250000, 275000),
+    'lr': 1e-3,
+    'lr_steps': (150000, 250000, 275000),
     'max_iter': 300000,
 
     'backbone': efficientnetb6_backbone.copy({
@@ -1065,9 +1065,7 @@ yolact_plus_taco_efficientnetb0_config = yolact_plus_efficientnetb0_config.copy(
     'max_size': 550,
     
     # Training params
-    'lr': 1e-3,
-    'lr_steps': (100000, 150000, 175000),
-    'max_iter': 200000,
+    #'use_focal_loss' :True,
     
  
 })
