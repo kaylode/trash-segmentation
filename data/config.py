@@ -1033,8 +1033,8 @@ yolact_plus_efficientdet_config = yolact_plus_base_config.copy({
     'num_classes': len(coco2017_dataset.class_names) + 1,
 
     'lr': 1e-3,
-    'lr_steps': (300000, 350000, 375000),
-    'max_iter': 400000,
+    'lr_steps': (150000, 250000, 275000),
+    'max_iter': 300000,
 
     'use_bifpn' : True,
     'fpn': fpn_base.copy({
