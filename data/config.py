@@ -993,7 +993,7 @@ yolact_plus_efficientnetb0_config = yolact_plus_base_config.copy({
     'lr': 5e-5,
     'lr_steps': (400000,),
     'max_iter': 400000,
-
+    'use_focal_loss' :True,
     'backbone': efficientnetb0_backbone.copy({
         'selected_layers': [4,10,15],
         
@@ -1013,9 +1013,9 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
 
     # Training params
     'lr': 5e-5,
-    'lr_steps': (300000,),
-    'max_iter': 300000,
-
+    'lr_steps': (400000,),
+    'max_iter': 400000,
+    'use_focal_loss' :True,
     'backbone': efficientnetb6_backbone.copy({
         'selected_layers': [14, 30, 44],
         #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
