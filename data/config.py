@@ -1,5 +1,5 @@
 from backbone import ResNetBackbone, VGGBackbone, ResNetBackboneGN, DarkNetBackbone, EfficientDetBackbone
-from eff import EfficientNetB0Backbone, EfficientNetB6Backbone
+from eff import EfficientNetB0Backbone, EfficientNetB2Backbone, EfficientNetB6Backbone
 from math import sqrt
 import torch
 
@@ -290,6 +290,17 @@ efficientnetb0_backbone = backbone_base.copy({
     'pred_aspect_ratios': [ [[0.66685089, 1.7073535, 0.87508774, 1.16524493, 0.49059086]] ] * 6,
 })
 
+efficientnetb2_backbone = backbone_base.copy({
+    'name': "EfficientNet B2",
+    "path": 'efficientnetb2.pth',
+    'type': EfficientNetB2Backbone,
+    'args': ([3, 4, 23, 3],), #fake
+    "transform": efficient_transform,
+    'selected_layers': list(range(5, 11)),
+    'pred_scales': [[1]]*6,
+    'pred_aspect_ratios': [ [[0.66685089, 1.7073535, 0.87508774, 1.16524493, 0.49059086]] ] * 6,
+})
+
 efficientnetb6_backbone = backbone_base.copy({
     'name': "EfficientNet B6",
     "path": 'efficientnetb6.pth',
@@ -303,7 +314,7 @@ efficientnetb6_backbone = backbone_base.copy({
 
 efficientdet_backbone = backbone_base.copy({
     'name': "EfficientDet",
-    "path": 'efficientnet-d6.pth',
+    "path": 'efficientnet-d0.pth',
     'type': EfficientDetBackbone,
     'args': (0,), #fake
     "transform": efficient_transform,
@@ -575,15 +586,15 @@ coco_base_config = Config({
 
     # SSD data augmentation parameters
     # Randomize hue, vibrance, etc.
-    'augment_photometric_distort': True,
+    'augment_photometric_distort': False,
     # Have a chance to scale down the image and pad (to emulate smaller detections)
-    'augment_expand': True,
+    'augment_expand': False,
     # Potentialy sample a random crop from the image and put it in a random place
-    'augment_random_sample_crop': True,
+    'augment_random_sample_crop': False,
     # Mirror the image with a probability of 1/2
-    'augment_random_mirror': True,
+    'augment_random_mirror': False,
     # Flip the image vertically with a probability of 1/2
-    'augment_random_flip': True,
+    'augment_random_flip': False,
     # With uniform probability, rotate the image [0,90,180,270] degrees
     'augment_random_rot90': False,
 
@@ -843,6 +854,7 @@ yolact_efficientnetb0_config = yolact_base_config.copy({
     }),
 })
 
+
 yolact_efficientnetb6_config = yolact_base_config.copy({
     'name': 'yolact_efficientnetb6',
     #'max_size': 380,
@@ -988,14 +1000,24 @@ yolact_plus_efficientnetb0_config = yolact_plus_base_config.copy({
     'name': 'yolact_plus_efficientnetb0',
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
-
-    # Training params
-    'lr': 5e-5,
-    'lr_steps': (400000,),
-    'max_iter': 400000,
-    'use_focal_loss' :True,
     'backbone': efficientnetb0_backbone.copy({
         'selected_layers': [4,10,15],
+        
+        'pred_scales': yolact_plus_base_config.backbone.pred_scales,
+        'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
+        'use_pixel_scales': True,
+        'preapply_sqrt': False,
+        'use_square_anchors': False, # This is for backward compatability with a bug
+    }),
+})
+
+
+yolact_plus_efficientnetb2_config = yolact_plus_base_config.copy({
+    'name': 'yolact_plus_efficientnetb2',
+    'dataset': coco2017_dataset,
+    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'backbone': efficientnetb2_backbone.copy({
+        'selected_layers': [4,11,22],
         
         'pred_scales': yolact_plus_base_config.backbone.pred_scales,
         'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
@@ -1010,12 +1032,6 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
     #'max_size': 400,
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
-
-    # Training params
-    'lr': 5e-5,
-    'lr_steps': (400000,),
-    'max_iter': 400000,
-    'use_focal_loss' :True,
     'backbone': efficientnetb6_backbone.copy({
         'selected_layers': [14, 30, 44],
         #'pred_scales': [[int(x[0] / yolact_base_config.max_size * 400)] for x in yolact_base_config.backbone.pred_scales],
@@ -1027,23 +1043,26 @@ yolact_plus_efficientnetb6_config = yolact_plus_base_config.copy({
     }),
 })
 
-yolact_plus_efficientdet_config = yolact_plus_base_config.copy({
-    'name': 'yolact_plus_efficientdet',
+yolact_efficientdet_config = yolact_plus_base_config.copy({
+    'name': 'yolact_efficientdet',
     'dataset': coco2017_dataset,
     'num_classes': len(coco2017_dataset.class_names) + 1,
 
     'lr': 1e-3,
-    'lr_steps': (150000, 250000, 275000),
-    'max_iter': 300000,
+    'lr_steps': (300000, 350000, 375000),
+    'max_iter': 400000,
+
+    # Image Size
+    'max_size': 512,
 
     'use_bifpn' : True,
     'fpn': fpn_base.copy({
         'use_conv_downsample': False,
         'num_features': 256,
     }),
-    'max_size':512,
+    #'max_size':512,
     'backbone': efficientdet_backbone.copy({
-        'selected_layers': [14, 30, 44],
+        'selected_layers': [4,10,15],
         
         'pred_scales': yolact_plus_base_config.backbone.pred_scales,
         'pred_aspect_ratios': yolact_plus_base_config.backbone.pred_aspect_ratios,
@@ -1065,7 +1084,9 @@ yolact_plus_taco_efficientnetb0_config = yolact_plus_efficientnetb0_config.copy(
     'max_size': 550,
     
     # Training params
-    #'use_focal_loss' :True,
+    'lr': 1e-3,
+    'lr_steps': (100000, 150000, 175000),
+    'max_iter': 200000,
     
  
 })

@@ -165,7 +165,9 @@ class EfficientNetB0Backbone(nn.Module):
         for block in self.layers:
             block.set_swish(memory_efficient)
 
-
+    def freeze(self):
+        for params in self.parameters():
+            params.requires_grad = False
     def init_backbone(self, path):
         load_pretrained_weights(self, 'efficientnet-b0', weights_path=path, load_fc=False, advprop=False)
 
@@ -194,7 +196,96 @@ class EfficientNetB0Backbone(nn.Module):
 
         return tuple(outs)
 
-  
+
+class EfficientNetB2Backbone(nn.Module):
+    def __init__(self, layer = [1, 2, 2, 3, 3, 4]):
+        super().__init__()
+        blocks_args, global_params= get_model_params('efficientnet-b2', None)
+        
+        assert isinstance(blocks_args, list), 'blocks_args should be a list'
+        assert len(blocks_args) > 0, 'block args must be greater than 0'
+        self._global_params = global_params
+        self._blocks_args = blocks_args
+
+        # Batch norm parameters
+        bn_mom = 1 - self._global_params.batch_norm_momentum
+        bn_eps = self._global_params.batch_norm_epsilon
+
+        # Get stem static or dynamic convolution depending on image size
+        image_size = global_params.image_size
+        Conv2d = get_same_padding_conv2d(image_size=image_size)
+
+        # Stem
+        in_channels = 3  # rgb
+        out_channels = round_filters(32, self._global_params)  # number of output channels
+        self._conv_stem = Conv2d(in_channels, out_channels, kernel_size=3, stride=2, bias=False)
+        self._bn0 = nn.BatchNorm2d(num_features=out_channels, momentum=bn_mom, eps=bn_eps)
+        image_size = calculate_output_image_size(image_size, 2)
+        
+        # Build blocks
+        self.channels = []
+        self.layers = nn.ModuleList([])
+        for block_args in self._blocks_args:
+
+            # Update block input and output filters based on depth multiplier.
+            block_args = block_args._replace(
+                input_filters=round_filters(block_args.input_filters, self._global_params),
+                output_filters=round_filters(block_args.output_filters, self._global_params),
+                num_repeat=round_repeats(block_args.num_repeat, self._global_params)
+            )
+            self.channels += [block_args.output_filters] * block_args.num_repeat
+            # The first block needs to take care of stride and filter size increase.
+            self.layers.append(MBConvBlock(block_args, self._global_params, image_size=image_size))
+            image_size = calculate_output_image_size(image_size, block_args.stride)
+            if block_args.num_repeat > 1: # modify block_args to keep same output size
+                block_args = block_args._replace(input_filters=block_args.output_filters, stride=1)
+            for _ in range(block_args.num_repeat - 1):
+                self.layers.append(MBConvBlock(block_args, self._global_params, image_size=image_size))
+                # image_size = calculate_output_image_size(image_size, block_args.stride)  # stride = 1
+
+        self._swish = MemoryEfficientSwish()
+        self.backbone_modules = [m for m in self.modules() if isinstance(m, nn.Conv2d)]
+    def set_swish(self, memory_efficient=True):
+        """Sets swish function as memory efficient (for training) or standard (for export).
+
+        Args:
+            memory_efficient (bool): Whether to use memory-efficient version of swish.
+
+        """
+        self._swish = MemoryEfficientSwish() if memory_efficient else Swish()
+        for block in self.layers:
+            block.set_swish(memory_efficient)
+
+    def freeze(self):
+        for params in self.parameters():
+            params.requires_grad = False
+    def init_backbone(self, path):
+        load_pretrained_weights(self, 'efficientnet-b2', weights_path=path, load_fc=False, advprop=False)
+
+    def forward(self, inputs):
+        """use convolution layer to extract feature .
+
+        Args:
+            inputs (tensor): Input tensor.
+
+        Returns:
+            Output of the final convolution 
+            layer in the efficientnet model.
+        """
+        # Stem
+        x = self._swish(self._bn0(self._conv_stem(inputs)))
+        
+
+        outs = []
+        # Blocks
+        for idx, block in enumerate(self.layers):
+            drop_connect_rate = self._global_params.drop_connect_rate
+            if drop_connect_rate:
+                drop_connect_rate *= float(idx) / len(self.layers) # scale drop connect_rate
+            x = block(x, drop_connect_rate=drop_connect_rate)
+            outs.append(x)
+
+        return tuple(outs)
 
 
 

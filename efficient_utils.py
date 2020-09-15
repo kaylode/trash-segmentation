@@ -561,7 +561,7 @@ def get_model_params(model_name, override_params):
 url_map = {
     'efficientnet-b0': 'weights/efficientnetb0-coco.pth',
     'efficientnet-b1': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b1-f1951068.pth',
-    'efficientnet-b2': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/efficientnet-b2-8bb594d6.pth',
+    'efficientnet-b2': 'weights/efficientnetb2.pth',
     'efficientnet-b3': 'weights/efficientnet-b3-5fb5a3c3.pth',
     'efficientnet-b4': 'weights/efficientnet-b4-6ed6700e.pth',
     'efficientnet-b5': 'weights/efficientnet-b5-b6417697.pth',
