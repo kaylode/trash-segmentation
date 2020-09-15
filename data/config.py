@@ -218,10 +218,10 @@ taco_dataset =  dataset_base.copy({
     'name': 'Taco',
 
     'train_images': 'data/taco/images',
-    'train_info':   'data/taco/annotations/annotations_0_train.json',
+    'train_info':   'data/taco/annotations/taco_train.json',
 
     'valid_images': 'data/taco/images',
-    'valid_info':   'data/taco/annotations/annotations_0_val.json',
+    'valid_info':   'data/taco/annotations/taco_val.json',
 
     'has_gt': True,
     'class_names': TACO_CLASSES,
@@ -1072,7 +1072,7 @@ yolact_efficientdet_config = yolact_plus_base_config.copy({
     }),
 })
 
-yolact_plus_taco_efficientnetb0_config = yolact_plus_efficientnetb0_config.copy({
+yolact_plus_taco_efficientnetb2_config = yolact_plus_efficientnetb2_config.copy({
     'name': 'yolact_taco_plus_efficientnetb0',
 
     
