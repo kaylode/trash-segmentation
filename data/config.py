@@ -588,7 +588,7 @@ coco_base_config = Config({
     # Randomize hue, vibrance, etc.
     'augment_photometric_distort': True,
     # Have a chance to scale down the image and pad (to emulate smaller detections)
-    'augment_expand': True,
+    'augment_expand': False,
     # Potentialy sample a random crop from the image and put it in a random place
     'augment_random_sample_crop': True,
     # Mirror the image with a probability of 1/2
@@ -1085,8 +1085,8 @@ yolact_plus_taco_efficientnetb2_config = yolact_plus_efficientnetb2_config.copy(
     
     # Training params
     'lr': 1e-3,
-    'lr_steps': (100000, 150000, 175000),
-    'max_iter': 200000,
+    'lr_steps': (80000, 90000),
+    'max_iter': 100000,
     
  
 })
