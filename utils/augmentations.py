@@ -604,7 +604,9 @@ class BaseTransform(object):
     def __init__(self, mean=MEANS, std=STD):
         self.augment = Compose([
             ConvertFromInts(),
-            Resize(resize_gt=False),
+            ToAbsoluteCoords(),
+            Resize(), #resize_gt=False
+            ToPercentCoords(),
             BackboneTransform(cfg.backbone.transform, mean, std, 'BGR')
         ])
 

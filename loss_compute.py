@@ -214,6 +214,10 @@ def train():
                              neg_threshold=cfg.negative_iou_threshold,
                              negpos_ratio=cfg.ohem_negpos_ratio)
 
+
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+
     compute_validation_loss(data_loader, val_loader, criterion)
           
             
@@ -296,6 +300,7 @@ def compute_validation_loss(data_loader, val_loader, criterion):
     if args.cuda:
         net = net.cuda()
     
+    weight_paths = os.listdir(args.resume)
 
     # Initialize everything
     if not cfg.freeze_bn: yolact_net.freeze_bn() # Freeze bn so we don't kill our means
@@ -306,23 +311,31 @@ def compute_validation_loss(data_loader, val_loader, criterion):
     num_epochs = math.ceil(cfg.max_iter / epoch_size)
 
     with torch.no_grad():
-        losses = {}
         
         # Don't switch to eval mode because we want to get losses
         next_iterations = args.start_iter
         
         for epoch in range(num_epochs):
-            losses = {}
             new_epoch = next_iterations // epoch_size
             if epoch != new_epoch:
                 continue
+            
+            losses = {}
+            yolact_net.train()
             for idx, datum in enumerate(tqdm(data_loader)):
                 iterations = epoch*epoch_size + idx
                 if iterations % 1500 == 0:
-                    weight_name = "yolact_taco_{}_{}.pth".format(epoch,iterations)
+                    for path in weight_paths:
+                        iter_id = path.split('_')[-1][:-4]
+                        epoch_id = int(path.split('_')[-2])
+                        if int(iter_id) == iterations:
+                          break
+
+                    weight_name = "yolact_taco_{}_{}.pth".format(epoch_id,iterations)
                     weight_path = os.path.join(args.resume, weight_name)
                     print('Loading {}...'.format(weight_name))
                     yolact_net.load_weights(weight_path)
+                    
                 else:
                     continue
 
@@ -343,22 +356,30 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                 print('Train loss: {}'.format(total_loss.item()))
                 next_iterations += 1500
                 break
-
+            
+            yolact_net.eval()
+            datum = None
+            _losses = None
             losses = {}
+            total_val = len(val_loader)
             for idx, datum in enumerate(tqdm(val_loader)):
-                _losses = net(datum)
-                _losses = { k: (v).mean() for k,v in _losses.items() }
-                for k, v in _losses.items():
-                    if k in losses:
-                        losses[k] += v
-                    else:
-                        losses[k] = v
+                try:
+                    _losses = net(datum)
+                    _losses = { k: (v).mean() for k,v in _losses.items() }
+                    for k, v in _losses.items():
+                        if k in losses:
+                            losses[k] += v
+                        else:
+                            losses[k] = v
+                except IndexError as e:
+                    total_val -= 1
+                    continue
             for k in losses.keys():
-                losses[k] /= len(val_loader)
+                losses[k] /= total_val
 
             total_val_loss = sum([k for k in losses.values()])
             print('Val loss: {}'.format(total_val_loss.item()))
-
+            
 
             with open(args.log_loss, 'a+') as f:
                 f.write('{}_{}_{}\r'.format(iterations, total_loss.item(), total_val_loss.item()))
