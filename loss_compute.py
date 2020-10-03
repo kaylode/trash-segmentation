@@ -321,7 +321,7 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                 continue
             
             losses = {}
-            yolact_net.train()
+            
             for idx, datum in enumerate(tqdm(data_loader)):
                 iterations = epoch*epoch_size + idx
                 if iterations % 1500 == 0:
@@ -357,7 +357,7 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                 next_iterations += 1500
                 break
             
-            yolact_net.eval()
+            
             datum = None
             _losses = None
             losses = {}
