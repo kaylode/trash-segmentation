@@ -331,7 +331,7 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                         if int(iter_id) == iterations:
                           break
 
-                    weight_name = "yolact_taco_{}_{}.pth".format(epoch_id,iterations)
+                    weight_name = path#"yolact_taco_{}_{}.pth".format(epoch_id,iterations)
                     weight_path = os.path.join(args.resume, weight_name)
                     print('Loading {}...'.format(weight_name))
                     yolact_net.load_weights(weight_path)
