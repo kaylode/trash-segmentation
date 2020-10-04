@@ -388,10 +388,10 @@ def compute_validation_loss(data_loader, val_loader, criterion):
             
             next_iterations += 1500
             with open(args.log_loss, 'a+') as f:
-                f.write('{}_{}_{}\r'.format(iterations, total_loss.item(), total_val_loss.item()))
+                f.write('{}_{}_{}\r'.format(iterations, total_train_loss.item(), total_val_loss.item()))
             
 
-            print("Done") 
+        print("Done") 
           #  break
 
 
