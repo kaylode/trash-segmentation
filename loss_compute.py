@@ -320,9 +320,9 @@ def compute_validation_loss(data_loader, val_loader, criterion):
             if epoch != new_epoch:
                 continue
             
-            losses = {}
+       
             
-            for idx, datum in enumerate(tqdm(data_loader)):
+            for idx, datum in enumerate(tqdm(range(len(data_loader)))):
                 iterations = epoch*epoch_size + idx
                 if iterations % 1500 == 0:
                     stop = True
@@ -342,25 +342,27 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                     
                 else:
                     continue
-
-
-                _losses = net(datum)
-                _losses = { k: (v).mean() for k,v in _losses.items() }
-               
-                for k, v in _losses.items():
-                    if k in losses:
-                        losses[k] += v
-                    else:
-                        losses[k] = v
-                    
-                total_loss = sum([k for k in losses.values()])
-                #loss_labels = sum([[k, losses[k]] for k in loss_types if k in losses], [])
             
-                #print(('Train Loss ||' + (' %s: %.3f |' * len(losses)) + ')') % tuple(loss_labels), flush=True, end='')
-                print('Train loss: {}'.format(total_loss.item()))
-                next_iterations += 1500
-                break
-            
+            datum = None
+            losses = {}   
+            total_train = len(data_loader)
+            for idx, datum in enumerate(tqdm(data_loader)):
+                try:
+                    _losses = net(datum)
+                    _losses = { k: (v).mean() for k,v in _losses.items() }
+                    for k, v in _losses.items():
+                        if k in losses:
+                            losses[k] += v
+                        else:
+                            losses[k] = v
+                except IndexError as e:
+                    total_val -= 1
+                    continue
+            for k in losses.keys():
+                losses[k] /= total_val
+
+            total_train_loss = sum([k for k in losses.values()])
+            print('Train loss: {}'.format(total_train_loss.item()))
             
             datum = None
             _losses = None
@@ -384,7 +386,7 @@ def compute_validation_loss(data_loader, val_loader, criterion):
             total_val_loss = sum([k for k in losses.values()])
             print('Val loss: {}'.format(total_val_loss.item()))
             
-
+            next_iterations += 1500
             with open(args.log_loss, 'a+') as f:
                 f.write('{}_{}_{}\r'.format(iterations, total_loss.item(), total_val_loss.item()))
             
