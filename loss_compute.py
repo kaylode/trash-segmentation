@@ -333,7 +333,8 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                             stop = False
                             break
                     if stop:
-                        break
+                        print("Stop at iter {}".format(iterations)) 
+                        return None
 
                     weight_name = path#"yolact_taco_{}_{}.pth".format(epoch_id,iterations)
                     weight_path = os.path.join(args.resume, weight_name)
@@ -391,7 +392,7 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                 f.write('{}_{}_{}\r'.format(iterations, total_train_loss.item(), total_val_loss.item()))
             
 
-        print("Done") 
+        
           #  break
 
 
