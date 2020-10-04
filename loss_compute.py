@@ -356,10 +356,10 @@ def compute_validation_loss(data_loader, val_loader, criterion):
                         else:
                             losses[k] = v
                 except IndexError as e:
-                    total_val -= 1
+                    total_train -= 1
                     continue
             for k in losses.keys():
-                losses[k] /= total_val
+                losses[k] /= total_train
 
             total_train_loss = sum([k for k in losses.values()])
             print('Train loss: {}'.format(total_train_loss.item()))
