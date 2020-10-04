@@ -325,11 +325,15 @@ def compute_validation_loss(data_loader, val_loader, criterion):
             for idx, datum in enumerate(tqdm(data_loader)):
                 iterations = epoch*epoch_size + idx
                 if iterations % 1500 == 0:
+                    stop = True
                     for path in weight_paths:
                         iter_id = path.split('_')[-1][:-4]
                         epoch_id = int(path.split('_')[-2])
                         if int(iter_id) == iterations:
-                          break
+                            stop = False
+                            break
+                    if stop:
+                        break
 
                     weight_name = path#"yolact_taco_{}_{}.pth".format(epoch_id,iterations)
                     weight_path = os.path.join(args.resume, weight_name)
@@ -384,7 +388,8 @@ def compute_validation_loss(data_loader, val_loader, criterion):
             with open(args.log_loss, 'a+') as f:
                 f.write('{}_{}_{}\r'.format(iterations, total_loss.item(), total_val_loss.item()))
             
-                
+
+            print("Done") 
           #  break
 
 
