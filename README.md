@@ -58,3 +58,9 @@ Backbone Resnet101: [Link](https://drive.google.com/file/d/1tvqFPd4bJtakOlmn-uIA
 
 - Sau đó bạn push folder yolact đó lên github cá nhân, và cũng upload dataset mới lên drive cá nhân
 - Tham khảo colab của mình, thay vào đó link github và drive của bạn
+
+# **Report**
+
+- Paper: [Read more here](https://github.com/kaylode/trash-segmentation/blob/master/report/Efficient%20Network%20For%20Applying%20Trash%20Segmentationinto%20Real%20Life.pdf)
+
+![alt text](report/results.png)
