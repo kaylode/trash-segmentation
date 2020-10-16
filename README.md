@@ -44,7 +44,7 @@ Backbone Resnet101: [Link](https://drive.google.com/file/d/1tvqFPd4bJtakOlmn-uIA
 	
 # **Hướng dẫn cài đặt và sử dụng trên colab**
 - Vào link này, thêm lối tắt drive của dataset và annotiation về drive của mình: 
-	- [Link dataset và annotation của TACO](https://drive.google.com/file/d/1Ol3OcfjAfRul0lxKuV6ezaKP89HXqDMz/view?usp=sharing)
+	- [Link dataset và annotation của TACO](https://drive.google.com/file/d/1iikJUyNosku8QJ5CoKZgaWJAoeIqGAY_/view?usp=sharing)
 - Thêm lối tắt 3 file pretrained weights ở trên về drive của mình
 
 - Tải [file colab](https://colab.research.google.com/drive/1ZVlF6K5HfcsS_G1tW_esY542n80CZOn0?usp=sharing) và chạy thử
